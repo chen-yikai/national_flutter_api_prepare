@@ -60,6 +60,19 @@ class _EntryState extends State<Entry> {
     }
   }
 
+  Future<void> postApi() async {
+    final payload = jsonEncode({
+      "soundId": 1,
+      "soundName": "test from flutter",
+      "alarmTime": "2025-07-16T17:33:59.116Z"
+    });
+    final client = HttpClient();
+    final request = await client.postUrl(Uri.parse("$hostname/alarms"))
+      ..headers.add("X-API-Key", "kitty-secret-key")
+      ..add(utf8.encode(payload));
+    request.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +80,11 @@ class _EntryState extends State<Entry> {
         child: Center(
           child: Column(
             children: [
+              FilledButton(
+                  onPressed: () {
+                    postApi();
+                  },
+                  child: Text("post")),
               Expanded(
                 child: FutureBuilder(
                     future: getApi(),
